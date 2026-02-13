@@ -38,7 +38,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	if (saveBtn) {
 		saveBtn.addEventListener('click', function() {
 			const code = input.value;
-			console.log('Saving church code:', code);
+      console.log(code)
+      localStorage.setItem('last_church', code);
 			closeModal();
 		});
 	}

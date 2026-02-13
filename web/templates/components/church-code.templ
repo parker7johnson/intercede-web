@@ -1,0 +1,136 @@
+package components 
+
+templ ChurchCode() {
+<dialog id="churchModal" class="modal">
+  <div class="modal-card">
+    <!-- Close Button -->
+    <button id="closeModalBtn" class="modal-close" type="button">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+    <!-- Header -->
+    <div class="text-center space-y-2 mb-8">
+      <h2 class="text-2xl font-bold text-[#4D4D40]">
+        Change Church Code
+      </h2>
+      <p class="text-sm text-[#808073]">
+        Get your unique code from your church administrator
+      </p>
+    </div>
+    <!-- Form -->
+    <form id="churchUpdateForm">
+      <input name="churchCode" type="text" id="churchCodeInput" placeholder="Enter Church Code" class="modal-input"
+        autocapitalize="characters" autocorrect="off" />
+      <button id="saveChurchCodeBtn" class="modal-save mt-4" type="button">
+        Save Church Code
+      </button>
+    </form>
+  </div>
+</dialog>
+<style>
+  /* Reset dialog */
+  .modal {
+    border: none;
+    padding: 0;
+    background: transparent;
+  }
+
+  .modal::backdrop {
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  /* Modal card */
+  .modal-card {
+    position: relative;
+    width: 90vw;
+    max-width: 420px;
+    padding: 2rem;
+    background: #f9f8f4;
+    border-radius: 1.5rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    font-family: system-ui, sans-serif;
+  }
+
+  /* Close button */
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    padding: 0.5rem;
+    border-radius: 9999px;
+    color: #4D4D40;
+    transition: background 0.2s;
+  }
+
+  .modal-close:hover {
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Input */
+  .modal-input {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    font-size: 1.25rem;
+    border-radius: 1rem;
+    border: 2px solid #e5e5e5;
+    color: #4D4D40;
+    text-transform: uppercase;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 16px;
+  }
+
+  .modal-input:focus {
+    border-color: #4D4D40;
+  }
+
+  /* Save button */
+  .modal-save {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    background: #4D4D40;
+    border: none;
+    border-radius: 9999px;
+    /* fully rounded */
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.2s;
+  }
+
+  .modal-save:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+  }
+
+  .modal-save:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+</style>
+}
