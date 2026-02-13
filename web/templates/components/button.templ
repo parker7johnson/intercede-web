@@ -1,0 +1,17 @@
+package components
+
+templ Button(text string, variant string) {
+	if variant == "primary" {
+		<button class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-md">
+			{ text }
+		</button>
+	} else if variant == "secondary" {
+		<button class="px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg hover:bg-gray-700 transition-colors shadow-md">
+			{ text }
+		</button>
+	} else {
+		<button class="px-6 py-3 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-colors shadow-md border border-gray-300">
+			{ text }
+		</button>
+	}
+}

@@ -1,0 +1,202 @@
+package pages
+
+import "github.com/parkerjohnson/intercede/web/templates/layouts"
+
+templ Home() {
+	@layouts.Base("Intercede") {
+		<div class="flex flex-col items-center justify-between min-h-screen space-y-10 py-16">
+			<!-- Top Spacer -->
+			<div class="flex-1"></div>
+			<!-- Title Section -->
+			<div class="text-center space-y-3">
+				<h1 class="text-6xl font-bold tracking-tight" style="color: #4D4D40;">
+					Intercede
+				</h1>
+				<p class="text-2xl" style="color: #808073;">
+					Share your heart with your church
+				</p>
+			</div>
+			<!-- Middle Spacer -->
+			<div class="flex-1"></div>
+			<!-- Action Buttons -->
+			<div class="w-full max-w-md px-8 space-y-6">
+				<button
+					class="w-full h-20 flex items-center justify-center space-x-3 bg-white/60 backdrop-blur-sm rounded-2xl shadow-md hover:bg-white/80 transition-all duration-200"
+					style="color: #4D4D40;"
+				>
+					<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+						<path
+							d="M7 22a2 2 0 01-2-2v-7H3a1 1 0 01-.8-1.6l9-12a1 1 0 011.6 0l9 12A1 1 0 0121 13h-2v7a2 2 0 01-2 2H7zm0-2h10v-7h3.21L12 3.8 3.79 13H7v7z"
+						></path>
+					</svg>
+					<span class="text-2xl font-semibold">Prayer Request</span>
+				</button>
+				<button
+					class="w-full h-20 flex items-center justify-center space-x-3 bg-white/60 backdrop-blur-sm rounded-2xl shadow-md hover:bg-white/80 transition-all duration-200"
+					style="color: #4D4D40;"
+				>
+					<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+						<path
+							d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+						></path>
+					</svg>
+					<span class="text-2xl font-semibold">Praise Report</span>
+				</button>
+			</div>
+			<!-- Bottom Spacer -->
+			<div class="flex-1"></div>
+			<!-- Church Selector -->
+			<button
+				id="openChurchModalBtn"
+				class="flex items-center space-x-2 px-6 py-3 hover:opacity-80 transition-opacity"
+				style="color: #4D4D40;"
+			>
+				<span class="text-xl">Sharing with: Victory Church (WA)</span>
+				<svg class="w-6 h-6" style="color: #808073;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+				</svg>
+			</button>
+			<!-- Bottom Spacer -->
+			<div class="flex-1"></div>
+		</div>
+		<!-- Church Code Modal -->
+		<dialog id="churchModal" class="modal">
+			<div class="modal-card">
+				<!-- Close Button -->
+				<button id="closeModalBtn" class="modal-close" type="button">
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+					</svg>
+				</button>
+				<!-- Header -->
+				<div class="text-center space-y-2 mb-8">
+					<h2 class="text-2xl font-bold text-[#4D4D40]">
+						Change Church Code
+					</h2>
+					<p class="text-sm text-[#808073]">
+						Get your unique code from your church administrator
+					</p>
+				</div>
+				<!-- Form -->
+				<form>
+					<input
+						type="text"
+						id="churchCodeInput"
+						placeholder="Enter Church Code"
+						class="modal-input"
+						autocapitalize="characters"
+						autocorrect="off"
+					/>
+					<button id="saveChurchCodeBtn" class="modal-save mt-4" type="button">
+						Save Church Code
+					</button>
+				</form>
+			</div>
+		</dialog>
+		<style>
+  /* Reset dialog */
+  .modal {
+    border: none;
+    padding: 0;
+    background: transparent;
+  }
+
+  .modal::backdrop {
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  /* Modal card */
+  .modal-card {
+    position: relative;
+    width: 90vw;
+    max-width: 420px;
+    padding: 2rem;
+    background: #f9f8f4;
+    border-radius: 1.5rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    font-family: system-ui, sans-serif;
+  }
+
+  /* Close button */
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    padding: 0.5rem;
+    border-radius: 9999px;
+    color: #4D4D40;
+    transition: background 0.2s;
+  }
+
+  .modal-close:hover {
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Input */
+  .modal-input {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    font-size: 1.25rem;
+    border-radius: 1rem;
+    border: 2px solid #e5e5e5;
+    color: #4D4D40;
+    text-transform: uppercase;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 16px;
+  }
+
+  .modal-input:focus {
+    border-color: #4D4D40;
+  }
+
+  /* Save button */
+  .modal-save {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    background: #4D4D40;
+    border: none;
+    border-radius: 9999px;
+    /* fully rounded */
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.2s;
+  }
+
+  .modal-save:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+  }
+
+  .modal-save:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+</style>
+	}
+}

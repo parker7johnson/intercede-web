@@ -1,0 +1,66 @@
+package pages
+
+import (
+	"github.com/parkerjohnson/intercede/web/templates/layouts"
+)
+
+templ ChurchCode() {
+	@layouts.Base("Change Church Code - Intercede") {
+		<div class="h-12 py-16">
+			<!-- Back Button -->
+			<div class="">
+				<a href="/" class="flex items-center space-x-2 hover:opacity-70 transition-opacity" style="color: #4D4D40;">
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+					</svg>
+				</a>
+			</div>
+
+			<div class="max-w-lg mx-auto px-8 space-y-8">
+				<!-- Header -->
+				<div class="text-center space-y-2 pt-8">
+					<h1 class="text-3xl font-bold" style="color: #4D4D40;">
+						Change Church Code
+					</h1>
+					<p class="text-base px-4" style="color: #808073;">
+						Get your unique code from your church administrator
+					</p>
+				</div>
+
+				<!-- Form -->
+				<div class="space-y-4">
+					<input
+						type="text"
+						id="churchCode"
+						placeholder="Church Code"
+						class="w-full text-2xl px-4 py-4 bg-white rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300 uppercase"
+						style="color: #4D4D40;"
+						autocapitalize="characters"
+						autocorrect="off"
+					/>
+
+					<button
+						id="saveButton"
+						class="w-full backdrop-blur-sm rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-xl font-semibold"
+						disabled
+						hx-post="/api/church-code"
+						hx-include="#churchCode"
+						hx-swap="none"
+					>
+						Save Church Code
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			// Enable/disable button based on input
+			const input = document.getElementById('churchCode');
+			const button = document.getElementById('saveButton');
+
+			input.addEventListener('input', (e) => {
+				button.disabled = e.target.value.trim() === '';
+			});
+		</script>
+	}
+}
