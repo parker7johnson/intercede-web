@@ -2,9 +2,56 @@ package pages
 
 import "github.com/parkerjohnson/intercede/web/templates/layouts"
 
+// PrayerRequestContent is the inner content for HTMX swaps
+templ PrayerRequestContent() {
+<div class="px-4" id="prayerRequestContainer">
+  <div class="max-w-3xl min-w-md mx-auto">
+    <div class="text-center mb-8">
+      <h1 class="prayer-header">Prayer Request</h1>
+      <p class="prayer-subheader">Share your prayer needs with your church</p>
+    </div>
+    <form id="prayerRequestForm" class="prayer-form">
+      <div>
+        <label for="title" class="prayer-label">
+          Request Title <span class="required">*</span>
+        </label>
+        <input type="text" id="title" name="title" required placeholder="e.g., Health, Family, Work..."
+          class="prayer-input" />
+      </div>
+      <div>
+        <label for="request" class="prayer-label">
+          Prayer Request <span class="required">*</span>
+        </label>
+        <textarea id="request" name="request" required rows="8" placeholder="Share what you'd like us to pray for..."
+          class="prayer-textarea"></textarea>
+      </div>
+      <div>
+        <label for="contact" class="prayer-label">
+          Contact Information (Optional)
+        </label>
+        <input type="text" id="contact" name="contact" placeholder="Email or phone number for follow-up"
+          class="prayer-input" />
+        <p class="prayer-helper-text">
+          This will only be visible to church leadership
+        </p>
+      </div>
+      <div class="prayer-buttons">
+        <button type="button" class="prayer-btn-cancel p-2" hx-get="/" hx-swap="innerHTML"
+          hx-target="#mainContent">
+          Cancel
+        </button>
+        <button type="submit" class="prayer-btn-submit" hx-get="/" hx-swap="innerHTML"
+          hx-target="#mainContent">
+          Submit Request
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+}
 
 templ PrayerRequest() {
-  @layouts.Base("Intercede") {
-
-  }
+@layouts.Base("Prayer Request - Intercede") {
+  @PrayerRequestContent()
+}
 }

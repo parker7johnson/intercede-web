@@ -1,13 +1,14 @@
 package handlers
 
+
 import (
 	"net/http"
 
 	"github.com/parkerjohnson/intercede/web/templates/pages"
 )
 
-// Home handles the home page request
-func (h *Handlers) Home(w http.ResponseWriter, r *http.Request) {
+// PrayerRequest handles the prayer request page request
+func (h *Handlers) PrayerRequest(w http.ResponseWriter, r *http.Request) {
 	// Only allow GET requests
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -20,10 +21,10 @@ func (h *Handlers) Home(w http.ResponseWriter, r *http.Request) {
 	var err error
 	if isHTMX {
 		// For HTMX requests, return just the content fragment
-		err = pages.HomeContent().Render(r.Context(), w)
+		err = pages.PrayerRequestContent().Render(r.Context(), w)
 	} else {
 		// For regular requests, return the full page with layout
-		err = pages.Home().Render(r.Context(), w)
+		err = pages.PrayerRequest().Render(r.Context(), w)
 	}
 
 	if err != nil {

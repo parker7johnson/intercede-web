@@ -26,7 +26,8 @@ func main() {
 
 	// Register routes
 	mux.HandleFunc("/", h.Home)
-	mux.HandleFunc("/church-code", h.ChurchCode)
+	mux.HandleFunc("/prayerrequest", h.PrayerRequest)
+	mux.HandleFunc("/praisereport", h.PraiseReport)
 
 	// Serve static files
 	// In production (with embedded files), this serves from embed.FS

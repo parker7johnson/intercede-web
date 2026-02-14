@@ -1,3 +1,135 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Request Form Styles (shared by prayer and praise forms) */
+
+/* Header styles */
+.prayer-header,
+.praise-header {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #4D4D40;
+}
+
+.prayer-subheader,
+.praise-subheader {
+  font-size: 1.125rem;
+  color: #808073;
+}
+
+/* Form styles */
+.prayer-form,
+.praise-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Label styles */
+.prayer-label,
+.praise-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #4D4D40;
+}
+
+.required {
+  color: #ef4444;
+}
+
+/* Input styles */
+.prayer-input,
+.praise-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border-radius: 1rem;
+  border: 2px solid #e5e5e5;
+  color: #4D4D40;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.prayer-input:focus,
+.praise-input:focus {
+  border-color: #4D4D40;
+}
+
+/* Textarea styles */
+.prayer-textarea,
+.praise-textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border-radius: 1rem;
+  border: 2px solid #e5e5e5;
+  color: #4D4D40;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: none;
+  font-family: system-ui, sans-serif;
+}
+
+.prayer-textarea:focus,
+.praise-textarea:focus {
+  border-color: #4D4D40;
+}
+
+/* Helper text */
+.prayer-helper-text,
+.praise-helper-text {
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  color: #808073;
+}
+
+/* Button container */
+.prayer-buttons,
+.praise-buttons {
+  display: flex;
+  gap: 1rem;
+  padding-top: 1rem;
+}
+
+/* Cancel button */
+.prayer-btn-cancel,
+.praise-btn-cancel {
+  flex: 1;
+  border-radius: 9999px;
+  border: 2px solid #4D4D40;
+  font-weight: 600;
+  color: #4D4D40;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.prayer-btn-cancel:hover,
+.praise-btn-cancel:hover {
+  background: rgba(77, 77, 64, 0.05);
+  transform: translateY(-1px);
+}
+
+/* Submit button */
+.prayer-btn-submit,
+.praise-btn-submit {
+  flex: 1;
+  padding: 1rem;
+  border-radius: 9999px;
+  border: none;
+  font-weight: 600;
+  color: white;
+  background: #4D4D40;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.2s;
+}
+
+.prayer-btn-submit:hover,
+.praise-btn-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}

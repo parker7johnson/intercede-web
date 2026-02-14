@@ -1,19 +1,23 @@
 package layouts
 
 templ Base(title string) {
-	<!DOCTYPE html>
-	<html lang="en">
-		<head>
-			<meta charset="UTF-8"/>
-			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-			<title>{ title }</title>
-			<link rel="stylesheet" href="/static/css/tailwind.css"/>
-			<script src="/static/js/htmx.min.js"></script>
-			<script src="/static/js/modal.js"></script>
-      <script src="/static/js/churchHooks.js" defer></script>
-		</head>
-		<body style="background-color: #F5F5DC;">
-			{ children... }
-		</body>
-	</html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{ title }</title>
+  <link rel="stylesheet" href="/static/css/tailwind.css" />
+  <link rel="stylesheet" href="/static/css/input.css" />
+  <script src="/static/js/htmx.min.js"></script>
+  <script src="/static/js/modal.js"></script>
+  <script src="/static/js/churchHooks.js" defer></script>
+</head>
+
+<body style="background-color: #F5F5DC;">
+  { children... }
+</body>
+
+</html>
 }
