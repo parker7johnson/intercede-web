@@ -1,13 +1,13 @@
-package handlers
+package webhandlers 
 
 // Handlers holds dependencies for HTTP handlers
-type Handlers struct {
+type WebHandlers struct {
 	// Add dependencies here (e.g., database, logger, services)
 }
 
 // New creates a new Handlers instance with dependencies
-func New() *Handlers {
-	return &Handlers{
+func NewWeb() *WebHandlers {
+	return &WebHandlers{
 		// Initialize dependencies here
 	}
 }

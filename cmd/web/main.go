@@ -1,47 +1,57 @@
 package main
 
 import (
+	"fmt"
 	"io/fs"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
-	"github.com/parkerjohnson/intercede/internal/handlers"
+	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/jmoiron/sqlx"
+	"github.com/joho/godotenv"
+	"github.com/parkerjohnson/intercede/handlers/api"
+	"github.com/parkerjohnson/intercede/handlers/webhandlers"
 	"github.com/parkerjohnson/intercede/internal/middleware"
 	"github.com/parkerjohnson/intercede/web"
 )
 
 func main() {
-	// Get port from environment or use default
+	err := godotenv.Load()
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "3000"
 	}
+	db, err := sqlx.Connect("pgx", os.Getenv("DB_URL"))
+	if err != nil {
+		fmt.Print(err)
+	}
+	db.SetMaxOpenConns(20)
+	db.SetMaxIdleConns(20)
+	db.SetConnMaxLifetime(5 * time.Minute)
 
-	// Initialize handlers with dependencies
-	h := handlers.New()
+	wh := webhandlers.NewWeb()
+	ah := api.NewApi(db)
 
 	// Create router
 	mux := http.NewServeMux()
 
-	// Register routes
-	mux.HandleFunc("/", h.Home)
-	mux.HandleFunc("/prayerrequest", h.PrayerRequest)
-	mux.HandleFunc("/praisereport", h.PraiseReport)
+	mux.HandleFunc("/", wh.Home)
+	mux.HandleFunc("/prayerrequest", wh.PrayerRequest)
+	mux.HandleFunc("/praisereport", wh.PraiseReport)
 
-	// Serve static files
-	// In production (with embedded files), this serves from embed.FS
-	// In development, this serves from the filesystem
+	mux.HandleFunc("/createPrayer", ah.CreatePrayerRequest)
+	mux.HandleFunc("/createPraise", ah.CreatePraiseReport)
+
 	staticFS, err := fs.Sub(web.StaticFiles, "static")
 	if err != nil {
 		log.Fatal(err)
 	}
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.FS(staticFS))))
 
-	// Build middleware chain: Logger -> SecurityHeaders -> Router
 	handler := middleware.Logger(middleware.SecurityHeaders(mux))
 
-	// Start server
 	log.Printf("Server starting on http://localhost:%s", port)
 	log.Fatal(http.ListenAndServe(":"+port, handler))
 }

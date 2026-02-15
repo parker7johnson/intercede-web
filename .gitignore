@@ -25,6 +25,8 @@ web/static/css/tailwind.css
 *.swo
 *~
 
+.env
+
 # OS
 .DS_Store
 Thumbs.db

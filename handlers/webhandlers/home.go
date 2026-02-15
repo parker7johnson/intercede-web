@@ -1,4 +1,4 @@
-package handlers
+package webhandlers 
 
 import (
 	"net/http"
@@ -6,23 +6,18 @@ import (
 	"github.com/parkerjohnson/intercede/web/templates/pages"
 )
 
-// Home handles the home page request
-func (h *Handlers) Home(w http.ResponseWriter, r *http.Request) {
-	// Only allow GET requests
+func (h *WebHandlers) Home(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	// Check if this is an HTMX request
 	isHTMX := r.Header.Get("HX-Request") == "true"
 
 	var err error
 	if isHTMX {
-		// For HTMX requests, return just the content fragment
 		err = pages.HomeContent().Render(r.Context(), w)
 	} else {
-		// For regular requests, return the full page with layout
 		err = pages.Home().Render(r.Context(), w)
 	}
 

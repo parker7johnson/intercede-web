@@ -6,22 +6,51 @@ import (
 	"time"
 )
 
-// Logger logs HTTP requests with method, URI, remote address, and duration
+// responseWriter wraps http.ResponseWriter to capture the status code
+type responseWriter struct {
+	http.ResponseWriter
+	statusCode int
+	written    bool
+}
+
+// WriteHeader captures the status code and calls the underlying WriteHeader
+func (rw *responseWriter) WriteHeader(statusCode int) {
+	if !rw.written {
+		rw.statusCode = statusCode
+		rw.written = true
+		rw.ResponseWriter.WriteHeader(statusCode)
+	}
+}
+
+func (rw *responseWriter) Write(b []byte) (int, error) {
+	if !rw.written {
+		rw.statusCode = http.StatusOK
+		rw.written = true
+	}
+	return rw.ResponseWriter.Write(b)
+}
+
 func Logger(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 
-		// Call the next handler
-		next.ServeHTTP(w, r)
+		// Wrap the ResponseWriter to capture status code
+		rw := &responseWriter{
+			ResponseWriter: w,
+			statusCode:     http.StatusOK, // default to 200 if not set
+			written:        false,
+		}
 
-		// Log request details
+		next.ServeHTTP(rw, r)
+
 		duration := time.Since(start)
 		log.Printf(
-			"%s %s from %s - took %v",
+			"%s %s from %s - took %v - status code - %d",
 			r.Method,
 			r.RequestURI,
 			r.RemoteAddr,
 			duration,
+			rw.statusCode,
 		)
 	})
 }

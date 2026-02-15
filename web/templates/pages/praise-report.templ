@@ -4,15 +4,15 @@ import "github.com/parkerjohnson/intercede/web/templates/layouts"
 
 // PraiseReportContent is the inner content for HTMX swaps
 templ PraiseReportContent() {
-<div class="px-4" id="praiseRequestContainer">
-  <div class="max-w-3xl min-w-xl mx-auto">
+<div class="w-full px-4 sm:px-6 mb-3 content-center items-center" id="praiseRequestContainer">
+  <div class="max-w-3xl mx-auto">
     <!-- Header -->
-    <div class="text-center mb-8">
+    <div class="text-center mb-4">
       <h1 class="prayer-header">Praise Report</h1>
       <p class="prayer-subheader">Share God's answers with your church</p>
     </div>
     <!-- Form -->
-    <form id="praiseRequestForm" class="prayer-form">
+    <form id="praiseRequestForm" class="prayer-form" hx-post="/createPraise">
       <!-- Title -->
       <div>
         <label for="title" class="prayer-label">
@@ -25,7 +25,7 @@ templ PraiseReportContent() {
         <label for="request" class="prayer-label">
           Praise Report<span class="required">*</span>
         </label>
-        <textarea id="request" name="request" required rows="8" placeholder="Share what God has done in your life..."
+        <textarea id="request" name="body" required rows="8" placeholder="Share what God has done in your life..."
           class="prayer-textarea"></textarea>
       </div>
       <!-- Contact Info -->
@@ -33,20 +33,22 @@ templ PraiseReportContent() {
         <label for="contact" class="prayer-label">
           Contact Information (Optional)
         </label>
-        <input type="text" id="contact" name="contact" placeholder="Email or phone number for follow-up"
+        <input type="text" id="contact" name="contactInfo" placeholder="Email or phone number for follow-up"
           class="prayer-input" />
         <p class="prayer-helper-text">
           This will only be visible to church leadership
         </p>
       </div>
+      <div id="noChurchCodeWarningPraise" class="hidden bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4" role="alert">
+        <p class="font-bold">No Church Code</p>
+        <p>Please enter your church code on the home page before submitting a praise report.</p>
+      </div>
       <!-- Buttons -->
       <div class="prayer-buttons">
-        <button type="button" class="prayer-btn-cancel" hx-get="/" hx-swap="innerHTML"
-          hx-target="#mainContent">
+        <button type="button" class="prayer-btn-cancel" hx-get="/" hx-swap="innerHTML" hx-target="#mainContent">
           Cancel
         </button>
-        <button type="submit" class="prayer-btn-submit" hx-get="/" hx-swap="innerHTML"
-          hx-target="#mainContent">
+        <button type="submit" id="praiseSubmitBtn" class="prayer-btn-submit">
           Submit Request
         </button>
       </div>
@@ -57,6 +59,6 @@ templ PraiseReportContent() {
 
 templ PraiseReport() {
 @layouts.Base("Praise Report - Intercede") {
-  @PraiseReportContent()
+@PraiseReportContent()
 }
 }

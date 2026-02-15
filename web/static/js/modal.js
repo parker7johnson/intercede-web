@@ -65,4 +65,14 @@ const updateChurchCode = () => {
   } else {
     churchCodeEl.innerHTML = `Sharing with: ${lastChurch}`
   }
+  const prayerSubmitButton = document.querySelector('prayer-btn-submit');
+  const praiseSubmitButton = document.querySelector('praise-btn-submit');
+  if (praiseSubmitButton) {
+    praiseSubmitButton.disabled = !(lastChurch === "" && code === null);
+  }
+
+  if (prayerSubmitButton) {
+    prayerSubmitButton.disabled = lastChurch === "" || code === null;
+  }
+
 };

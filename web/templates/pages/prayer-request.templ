@@ -4,13 +4,13 @@ import "github.com/parkerjohnson/intercede/web/templates/layouts"
 
 // PrayerRequestContent is the inner content for HTMX swaps
 templ PrayerRequestContent() {
-<div class="px-4" id="prayerRequestContainer">
-  <div class="max-w-3xl min-w-md mx-auto">
-    <div class="text-center mb-8">
+<div class="w-full px-4 mb-3 sm:px-6" id="prayerRequestContainer">
+  <div class="max-w-3xl mx-auto">
+    <div class="text-center mb-4">
       <h1 class="prayer-header">Prayer Request</h1>
       <p class="prayer-subheader">Share your prayer needs with your church</p>
     </div>
-    <form id="prayerRequestForm" class="prayer-form">
+    <form id="prayerRequestForm" class="prayer-form" hx-post="/createPrayer">
       <div>
         <label for="title" class="prayer-label">
           Request Title <span class="required">*</span>
@@ -22,26 +22,30 @@ templ PrayerRequestContent() {
         <label for="request" class="prayer-label">
           Prayer Request <span class="required">*</span>
         </label>
-        <textarea id="request" name="request" required rows="8" placeholder="Share what you'd like us to pray for..."
+        <textarea id="request" name="body" required rows="8" placeholder="Share what you'd like us to pray for..."
           class="prayer-textarea"></textarea>
       </div>
       <div>
         <label for="contact" class="prayer-label">
           Contact Information (Optional)
         </label>
-        <input type="text" id="contact" name="contact" placeholder="Email or phone number for follow-up"
+        <input type="text" id="contact" name="contactInfo" placeholder="Email or phone number for follow-up"
           class="prayer-input" />
         <p class="prayer-helper-text">
           This will only be visible to church leadership
         </p>
       </div>
+      <div id="noChurchCodeWarning" class="hidden bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4" role="alert">
+        <p class="font-bold">No Church Code</p>
+        <p>Please enter your church code on the home page before submitting a prayer request.</p>
+      </div>
       <div class="prayer-buttons">
-        <button type="button" class="prayer-btn-cancel p-2" hx-get="/" hx-swap="innerHTML"
-          hx-target="#mainContent">
+        <button type="button" class="prayer-btn-cancel p-2" hx-get="/" hx-target="#mainContent"
+          hx-swap="innerHTMl"
+        >
           Cancel
         </button>
-        <button type="submit" class="prayer-btn-submit" hx-get="/" hx-swap="innerHTML"
-          hx-target="#mainContent">
+        <button type="submit" id="prayerSubmitBtn" class="prayer-btn-submit">
           Submit Request
         </button>
       </div>
