@@ -1,6 +1,7 @@
 package pages
 
 import "github.com/parkerjohnson/intercede/web/templates/layouts"
+import "github.com/parkerjohnson/intercede/web/templates/components"
 
 // PrayerRequestContent is the inner content for HTMX swaps
 templ PrayerRequestContent() {
@@ -35,10 +36,7 @@ templ PrayerRequestContent() {
           This will only be visible to church leadership
         </p>
       </div>
-      <div id="noChurchCodeWarning" class="hidden bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4" role="alert">
-        <p class="font-bold">No Church Code</p>
-        <p>Please enter your church code on the home page before submitting a prayer request.</p>
-      </div>
+     
       <div class="prayer-buttons">
         <button type="button" class="prayer-btn-cancel p-2" hx-get="/" hx-target="#mainContent"
           hx-swap="innerHTMl"
@@ -52,6 +50,7 @@ templ PrayerRequestContent() {
     </form>
   </div>
 </div>
+@components.ChurchCodeButton()
 }
 
 templ PrayerRequest() {

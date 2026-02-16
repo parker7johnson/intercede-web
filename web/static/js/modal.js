@@ -1,12 +1,37 @@
 const CHURCH_KEY = 'last_church';
 document.addEventListener('DOMContentLoaded', function() {
+  initializeButtonActions()
+  updateChurchCode()
+
+});
+
+const updateChurchCode = () => {
+  const churchCodeEl = document.getElementById('lastChurchCode');
+  const lastChurch = localStorage.getItem(CHURCH_KEY);
+  if (!lastChurch) {
+    churchCodeEl.innerHTML = 'Enter Church Code here';
+  } else if (churchCodeEl) {
+    churchCodeEl.innerHTML = `Sharing with: ${lastChurch}`
+  }
+
+
+};
+
+document.addEventListener('htmx:afterSwap', (event) => {
+  initializeButtonActions();
+  updateChurchCode()
+});
+
+
+const initializeButtonActions = () => {
+
+
   const modal = document.getElementById('churchModal');
   const openBtn = document.getElementById('openChurchModalBtn');
   const closeBtn = document.getElementById('closeModalBtn');
   const input = document.getElementById('churchCodeInput');
   const saveBtn = document.getElementById('saveChurchCodeBtn');
 
-  updateChurchCode();
 
   // Open modal
   if (openBtn) {
@@ -53,26 +78,4 @@ document.addEventListener('DOMContentLoaded', function() {
       saveBtn.disabled = e.target.value.trim() === '';
     });
   }
-
-
-});
-
-const updateChurchCode = () => {
-  const churchCodeEl = document.getElementById('lastChurchCode');
-  const lastChurch = localStorage.getItem(CHURCH_KEY);
-  if (!lastChurch) {
-    churchCodeEl.innerHTML = 'Enter Church Code here';
-  } else {
-    churchCodeEl.innerHTML = `Sharing with: ${lastChurch}`
-  }
-  const prayerSubmitButton = document.querySelector('prayer-btn-submit');
-  const praiseSubmitButton = document.querySelector('praise-btn-submit');
-  if (praiseSubmitButton) {
-    praiseSubmitButton.disabled = !(lastChurch === "" && code === null);
-  }
-
-  if (prayerSubmitButton) {
-    prayerSubmitButton.disabled = lastChurch === "" || code === null;
-  }
-
-};
+}
