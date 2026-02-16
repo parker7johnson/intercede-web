@@ -1,5 +1,7 @@
 package layouts
 
+import "github.com/parkerjohnson/intercede/web/templates/components"
+
 templ Base(title string) {
 <!DOCTYPE html>
 <html lang="en">
@@ -16,7 +18,22 @@ templ Base(title string) {
 </head>
 
 <body style="background-color: #F5F5DC;">
-  { children... }
+  <div id="mainContent" class="flex flex-col items-center min-h-screen w-full py-16">
+    <div class="flex-1"></div>
+    <div  class="w-full flex flex-col items-center space-y-10">
+      { children... }
+    </div>
+    <div class="flex-1"></div>
+    <button id="openChurchModalBtn" class="flex items-center px-2 py-1 hover:opacity-80 transition-opacity"
+      style="color: #4D4D40; margin-top: 10px">
+      <span class="text-xl" id="lastChurchCode"></span>
+      <svg class="w-6 h-6" style="color: #808073;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+      </svg>
+    </button>
+    <div class="flex-1"></div>
+  </div>
+  @components.ChurchCode()
 </body>
 
 </html>

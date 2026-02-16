@@ -19,7 +19,7 @@ func New(db *sqlx.DB) *SubmissionHandler {
 }
 
 func (sh *SubmissionHandler) CreatePrayerRequest(prayerReq *models.Submission) error {
-	query := `insert into prayer_requests (title, body, contact_info, church_code) 
+	query := `insert into prayer_requests (title, body, contact_info, church_code)
 	values (:title, :body, :contact_info, :church_code)`
 
 	_, err := sh.db.NamedExec(query, prayerReq)
@@ -31,7 +31,7 @@ func (sh *SubmissionHandler) CreatePrayerRequest(prayerReq *models.Submission) e
 }
 
 func (sh *SubmissionHandler) CreatePraiseReport(prayerReq *models.Submission) error {
-	query := `insert into praise_reports (title, body, contact_info, church_code) 
+	query := `insert into praise_reports (title, body, contact_info, church_code)
 values (:title, :body, :contact_info, :church_code)`
 
 	_, err := sh.db.NamedExec(query, prayerReq)

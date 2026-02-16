@@ -40,6 +40,7 @@ func main() {
 	mux.HandleFunc("/", wh.Home)
 	mux.HandleFunc("/prayerrequest", wh.PrayerRequest)
 	mux.HandleFunc("/praisereport", wh.PraiseReport)
+	mux.HandleFunc("/admin", wh.AdminLogin)
 
 	mux.HandleFunc("/createPrayer", ah.CreatePrayerRequest)
 	mux.HandleFunc("/createPraise", ah.CreatePraiseReport)

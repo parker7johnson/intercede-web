@@ -1,4 +1,4 @@
-package webhandlers 
+package webhandlers
 
 // Handlers holds dependencies for HTTP handlers
 type WebHandlers struct {
