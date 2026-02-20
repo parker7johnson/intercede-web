@@ -1,0 +1,43 @@
+package pages
+
+import "github.com/parkerjohnson/intercede/web/templates/layouts"
+
+// PrayerRequestContent is the inner content for HTMX swaps
+templ AdminLoginContent() {
+<div class="w-full px-4 mb-3 sm:px-6" id="prayerRequestContainer">
+  <div class="max-w-3xl mx-auto">
+    <div class="text-center mb-4">
+      <h1 class="prayer-header">Church Admin Login</h1>
+      <p class="prayer-subheader">Login in to manage your churchs requests</p>
+    </div>
+    <form id="prayerRequestForm" class="prayer-form" hx-post="/login">
+      <div>
+        <label for="title" class="prayer-label">
+          Username <span class="required">*</span>
+        </label>
+        <input type="text" id="title" name="username" required placeholder="Admin username" class="prayer-input" />
+      </div>
+      <div>
+        <label for="request" class="prayer-label">
+          Password <span class="required">*</span>
+        </label>
+        <input id="request" name="password" required rows="8" placeholder="Admin password" class="prayer-input" />
+      </div>
+      <div class="prayer-buttons">
+        <button type="button" class="prayer-btn-cancel p-2" hx-get="/" hx-target="#mainContent" hx-swap="innerHTMl">
+          Back 
+        </button>
+        <button type="submit" id="prayerSubmitBtn" class="prayer-btn-submit">
+          Login 
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+}
+
+templ AdminLogin() {
+@layouts.Base("Admin Login - Intercede") {
+@AdminLoginContent()
+}
+}

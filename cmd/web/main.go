@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io/fs"
 	"log"
 	"net/http"
@@ -25,7 +24,7 @@ func main() {
 	}
 	db, err := sqlx.Connect("pgx", os.Getenv("DB_URL"))
 	if err != nil {
-		fmt.Print(err)
+		log.Fatal(err)
 	}
 	db.SetMaxOpenConns(20)
 	db.SetMaxIdleConns(20)
@@ -40,6 +39,7 @@ func main() {
 	mux.HandleFunc("/", wh.Home)
 	mux.HandleFunc("/prayerrequest", wh.PrayerRequest)
 	mux.HandleFunc("/praisereport", wh.PraiseReport)
+	mux.HandleFunc("/adminlogin", wh.AdminLogin)
 
 	mux.HandleFunc("/createPrayer", ah.CreatePrayerRequest)
 	mux.HandleFunc("/createPraise", ah.CreatePraiseReport)
