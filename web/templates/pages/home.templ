@@ -40,12 +40,13 @@ templ HomeContent() {
 
 templ Home() {
 @layouts.Base("Intercede") {
-<div class="flex flex-col items-center min-h-screen w-full">
+<div class="flex flex-col items-center w-full" style="min-height: 90vh;">
   <div class="flex-1"></div>
-  <div id="mainContent" class="w-full flex flex-col items-center space-y-10">
+  <div id="mainContent" class="w-full flex flex-col items-center space-y-10 pt-4">
     @HomeContent()
   </div>
   <div class="flex-1"></div>
 </div>
+@components.ChurchCode()
 }
 }
