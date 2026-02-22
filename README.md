@@ -1,40 +1,50 @@
 # Intercede
 
-A modern, production-ready boilerplate for building web applications with **Go**, **HTMX**, **Templ**, and **Tailwind CSS**.
+A web application for church congregations to submit prayer requests and praise reports. Members submit through a simple form, church administrators log in to manage submissions.
 
-## Features
+## How It Works
 
-- 🚀 **Fast Development** - Hot reload for Go, Templ, and Tailwind
-- 🎯 **Type-Safe Templates** - Compile-time checking with Templ
-- ⚡ **Dynamic Interactions** - Rich UI without complex JavaScript (HTMX)
-- 🎨 **Utility-First Styling** - Tailwind CSS with automatic purging
-- 📦 **Single Binary Deployment** - Embedded static assets
-- 🏗️ **Clean Architecture** - Handlers, middleware, and dependency injection
-- 🔒 **Security Headers** - Built-in security middleware
+- Members visit the site and submit a prayer request or praise report via an HTMX-powered form
+- Submissions are tagged with a church code passed via the `X-Church-Code` request header
+- Administrators log in at `/adminlogin` using email and password, authenticated through Supabase
+- Submissions are stored in PostgreSQL
+
+## Tech Stack
+
+- **Go** - HTTP server using the standard library (`net/http`)
+- **PostgreSQL** - Submission storage via `sqlx` and `pgx`
+- **Supabase** - Admin authentication (email/password, session cookies)
+- **HTMX** - Form submissions and page interactions without custom JavaScript
+- **Templ** - Type-safe, compiled HTML templates
+- **Tailwind CSS** - Utility-first styling
+- **Fly.io** - Deployment target
 
 ## Prerequisites
 
-- **Go** 1.23 or higher
-- **Node.js** 18 or higher
-- **Make** (for build automation)
+- Go 1.24 or higher
+- Node.js 18 or higher (for Tailwind)
+- Make
+- A PostgreSQL database
+- A Supabase project (for admin auth)
 
-## Quick Start
+## Environment Variables
 
-### 1. Setup
+Create a `.env` file in the project root:
 
-Install dependencies and download HTMX:
+```
+PORT=3000
+DB_URL=postgres://...
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_KEY=your-anon-key
+```
+
+## Development
+
+Install dependencies:
 
 ```bash
 make setup
 ```
-
-This will:
-- Install Go dependencies
-- Install Node dependencies (Tailwind CSS)
-- Install the Templ CLI
-- Download HTMX from CDN
-
-### 2. Development
 
 Start the development server with hot reload:
 
@@ -42,171 +52,48 @@ Start the development server with hot reload:
 make dev
 ```
 
-This starts:
-- **Go server** on `http://localhost:3000`
-- **Templ proxy** on `http://localhost:7331` (use this for hot reload)
-- **Tailwind** in watch mode
+The Go server runs on `http://localhost:3000`. Access via `http://localhost:7331` for Templ hot reload.
 
-Visit `http://localhost:7331` to see your app with hot reload enabled.
-
-### 3. Production Build
-
-Build the production binary:
+## Production Build
 
 ```bash
 make build
-```
-
-Run the production server:
-
-```bash
 ./bin/server
 ```
 
-The binary includes all static assets (CSS, JS) embedded, so you can deploy it anywhere without additional files.
+Static assets (CSS, JS) are embedded in the binary at build time.
 
 ## Project Structure
 
 ```
 intercede/
 ├── cmd/web/
-│   └── main.go              # Server entry point, routing, middleware
+│   └── main.go                  # Entry point, routing
+├── handlers/
+│   ├── api/                     # API handlers (submissions, auth)
+│   └── webhandlers/             # Page handlers
 ├── internal/
-│   ├── handlers/            # HTTP request handlers
-│   │   ├── handlers.go      # Dependency injection container
-│   │   └── home.go          # Home page handler
-│   └── middleware/          # HTTP middleware
-│       └── middleware.go    # Logger, security headers
+│   └── middleware/              # Logger, security headers, auth middleware
+├── services/
+│   ├── models/                  # Data models (Submission)
+│   ├── submissions_service.go   # Prayer request and praise report DB logic
+│   └── auth_service.go          # Supabase authentication
+├── utils/                       # Logger
 ├── web/
-│   ├── embed.go             # Embed static files for production
-│   ├── templates/           # Templ templates
-│   │   ├── layouts/         # Base layouts
-│   │   ├── pages/           # Page templates
-│   │   └── components/      # Reusable components
-│   └── static/              # Static assets
-│       ├── css/             # Tailwind CSS
-│       └── js/              # JavaScript (HTMX)
-├── go.mod                   # Go dependencies
-├── package.json             # Node dependencies
-├── tailwind.config.js       # Tailwind configuration
-├── Makefile                 # Build automation
-└── README.md                # This file
+│   ├── templates/               # Templ templates (layouts, pages, components)
+│   └── static/                  # CSS, JS assets
+├── .github/workflows/           # CI (build, vet, test)
+├── Makefile
+└── fly.toml                     # Fly.io deployment config
 ```
 
 ## Available Commands
-
-Run `make help` to see all available commands:
 
 - `make setup` - Install all dependencies
 - `make dev` - Start development server with hot reload
 - `make build` - Build production binary
 - `make clean` - Remove generated files
 
-## Adding New Pages
+## CI
 
-### 1. Create a Templ template
-
-Create a new file in `web/templates/pages/`:
-
-```go
-// web/templates/pages/about.templ
-package pages
-
-import "github.com/parkerjohnson/intercede/web/templates/layouts"
-
-templ About() {
-    @layouts.Base("About") {
-        <h1>About Page</h1>
-        <p>Your content here</p>
-    }
-}
-```
-
-### 2. Create a handler
-
-Add a handler in `internal/handlers/`:
-
-```go
-// internal/handlers/about.go
-package handlers
-
-import (
-    "net/http"
-    "github.com/parkerjohnson/intercede/web/templates/pages"
-)
-
-func (h *Handlers) About(w http.ResponseWriter, r *http.Request) {
-    pages.About().Render(r.Context(), w)
-}
-```
-
-### 3. Register the route
-
-Add the route in `cmd/web/main.go`:
-
-```go
-mux.HandleFunc("/about", h.About)
-```
-
-## Working with HTMX
-
-HTMX is included and ready to use. Example button that makes a POST request:
-
-```html
-<button
-    hx-post="/api/endpoint"
-    hx-target="#result"
-    hx-swap="innerHTML"
->
-    Click Me
-</button>
-<div id="result"></div>
-```
-
-Create a handler that returns HTML fragments:
-
-```go
-func (h *Handlers) MyEndpoint(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Content-Type", "text/html")
-    w.Write([]byte("<p>Updated content!</p>"))
-}
-```
-
-## Development Tips
-
-### Hot Reload
-
-The development server (`make dev`) automatically reloads when you change:
-- `.templ` files (Templ templates)
-- `.go` files (Go source code)
-- Tailwind classes in templates
-
-Always access the app via `http://localhost:7331` (proxy) for hot reload to work.
-
-### Tailwind CSS
-
-Tailwind is configured to scan all `.templ` files. Just use utility classes in your templates:
-
-```go
-<div class="bg-blue-500 text-white p-4 rounded-lg">
-    Hello, Tailwind!
-</div>
-```
-
-The CSS is automatically rebuilt in development and minified in production.
-
-### Static Assets
-
-In development, static files are served from `web/static/`.
-In production, they're embedded in the binary via `//go:embed`.
-
-## Tech Stack
-
-- **[Go](https://go.dev/)** - Backend language and HTTP server
-- **[HTMX](https://htmx.org/)** - Dynamic interactions without JavaScript
-- **[Templ](https://templ.guide/)** - Type-safe HTML templates
-- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
-
-## License
-
-MIT
+GitHub Actions runs on every push and on pull requests to `main`. The pipeline generates Templ files, builds, vets, and runs all tests.
