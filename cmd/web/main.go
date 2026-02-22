@@ -45,7 +45,7 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	//authMiddleWare := middleware.RequireAuth(client)
+	//authMiddleWare := middleware.RequireAuth(&middleware.SupabaseTokenVerifier{Client: client})
 
 	mux.HandleFunc("/", wh.Home)
 	mux.HandleFunc("/prayerrequest", wh.PrayerRequest)

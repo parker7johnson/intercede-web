@@ -5,17 +5,17 @@ import (
 	"github.com/supabase-community/gotrue-go/types"
 )
 
-type supabaseClient interface {
+type SupabaseClient interface {
 	SignInWithEmailPassword(email, password string) (types.Session, error)
 	EnableTokenAutoRefresh(session types.Session)
 }
 
 type AuthService struct {
 	log    *utils.Logger
-	Client supabaseClient
+	Client SupabaseClient
 }
 
-func NewAuthService(client supabaseClient) *AuthService {
+func NewAuthService(client SupabaseClient) *AuthService {
 	return &AuthService{
 		log:    utils.NewLogger("AuthApiLogger"),
 		Client: client,

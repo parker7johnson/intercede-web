@@ -2,11 +2,21 @@ package api
 
 import (
 	"net/http"
+
 )
 
 func (ah *ApiHandlers) Login(w http.ResponseWriter, r *http.Request) {
+	
+	if r.Method != http.MethodPost {
+		http.Error(w, NOT_ALLOWED, http.StatusMethodNotAllowed)
+		return
+	}
+
+	//because these are empty strings if they are missing
+	//we don't need to check for nils before we try and login
 	email := r.FormValue("email")
 	password := r.FormValue("password")
+	
 	session, err := ah.authHandler.Login(email, password)
 	if err != nil {
 		http.Error(w, "Invalid email or password supplied", http.StatusUnauthorized)

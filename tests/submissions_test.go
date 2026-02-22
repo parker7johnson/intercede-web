@@ -11,24 +11,11 @@ import (
 
 	"github.com/parkerjohnson/intercede/handlers/api"
 	"github.com/parkerjohnson/intercede/services"
+	"github.com/parkerjohnson/intercede/tests/mocks"
 )
-
-const (
-	title   = "test title"
-	body    = "test body"
-	contact = "test contact"
-)
-
-type mockDb struct {
-	MockedFn func(string, interface{}) (sql.Result, error)
-}
-
-func (m *mockDb) NamedExec(query string, args interface{}) (sql.Result, error) {
-	return m.MockedFn(query, args)
-}
 
 func newHandler(dbResult sql.Result, dbError error) *api.ApiHandlers {
-	sh := services.New(&mockDb{
+	sh := services.New(&mocks.MockDb{
 		MockedFn: func(s string, i interface{}) (sql.Result, error) {
 			return dbResult, dbError
 		},
@@ -59,10 +46,10 @@ func TestCreatePrayerRequest(t *testing.T) {
 		dbResult   sql.Result
 		dbError    error
 	}{
-		{"success", http.MethodPost, "test_church", http.StatusOK, nil, nil},
-		{"bad method", http.MethodGet, "test_church", http.StatusMethodNotAllowed, nil, nil},
+		{"success", http.MethodPost, testChurchCode, http.StatusOK, nil, nil},
+		{"bad method", http.MethodGet, testChurchCode, http.StatusMethodNotAllowed, nil, nil},
 		{"no church code", http.MethodPost, "", http.StatusBadRequest, nil, nil},
-		{"db error", http.MethodPost, "test_church", http.StatusInternalServerError, nil, errors.New("mocked db result")},
+		{"db error", http.MethodPost, testChurchCode, http.StatusInternalServerError, nil, errors.New("mocked db result")},
 	}
 
 	for _, tc := range cases {
@@ -87,10 +74,10 @@ func TestCreatePraiseReport(t *testing.T) {
 		dbResult   sql.Result
 		dbError    error
 	}{
-		{"success", http.MethodPost, "test_church", http.StatusOK, nil, nil},
-		{"bad method", http.MethodGet, "test_church", http.StatusMethodNotAllowed, nil, nil},
+		{"success", http.MethodPost, testChurchCode, http.StatusOK, nil, nil},
+		{"bad method", http.MethodGet, testChurchCode, http.StatusMethodNotAllowed, nil, nil},
 		{"no church code", http.MethodPost, "", http.StatusBadRequest, nil, nil},
-		{"db error", http.MethodPost, "test_church", http.StatusInternalServerError, nil, errors.New("mocked db result")},
+		{"db error", http.MethodPost, testChurchCode, http.StatusInternalServerError, nil, errors.New("mocked db result")},
 	}
 
 	for _, tc := range cases {

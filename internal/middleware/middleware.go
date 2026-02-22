@@ -8,6 +8,21 @@ import (
 	"github.com/supabase-community/supabase-go"
 )
 
+// TokenVerifier abstracts session token validation, making RequireAuth testable.
+type TokenVerifier interface {
+	VerifyToken(token string) error
+}
+
+// SupabaseTokenVerifier wraps *supabase.Client to implement TokenVerifier.
+type SupabaseTokenVerifier struct {
+	Client *supabase.Client
+}
+
+func (s *SupabaseTokenVerifier) VerifyToken(token string) error {
+	_, err := s.Client.Auth.WithToken(token).GetUser()
+	return err
+}
+
 // responseWriter wraps http.ResponseWriter to capture the status code
 type responseWriter struct {
 	http.ResponseWriter
@@ -68,7 +83,7 @@ func SecurityHeaders(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
-func RequireAuth(client *supabase.Client) func(http.Handler) http.Handler {
+func RequireAuth(verifier TokenVerifier) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			cookie, err := r.Cookie("session")
@@ -76,13 +91,11 @@ func RequireAuth(client *supabase.Client) func(http.Handler) http.Handler {
 				http.Redirect(w, r, "/adminlogin", http.StatusSeeOther)
 				return
 			}
-			_, err = client.Auth.WithToken(cookie.Value).GetUser()
-			if err != nil {
-				http.Redirect(w, r, "adminlogin", http.StatusSeeOther)
-				return 
+			if err = verifier.VerifyToken(cookie.Value); err != nil {
+				http.Redirect(w, r, "/adminlogin", http.StatusSeeOther)
+				return
 			}
 			next.ServeHTTP(w, r)
-
 		})
 	}
 }
