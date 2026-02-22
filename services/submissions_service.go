@@ -1,17 +1,22 @@
 package services
 
 import (
-	"github.com/jmoiron/sqlx"
+	"database/sql"
+
 	"github.com/parkerjohnson/intercede/services/models"
 	"github.com/parkerjohnson/intercede/utils"
 )
 
-type SubmissionHandler struct {
-	log *utils.Logger
-	db  *sqlx.DB
+type database interface {
+	NamedExec(query string, arg interface{}) (sql.Result, error)
 }
 
-func New(db *sqlx.DB) *SubmissionHandler {
+type SubmissionHandler struct {
+	log *utils.Logger
+	db  database
+}
+
+func New(db database) *SubmissionHandler {
 	return &SubmissionHandler{
 		log: utils.NewLogger("PrayerRequestService"),
 		db:  db,

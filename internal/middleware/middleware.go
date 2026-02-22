@@ -4,6 +4,8 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/supabase-community/supabase-go"
 )
 
 // responseWriter wraps http.ResponseWriter to capture the status code
@@ -65,4 +67,22 @@ func SecurityHeaders(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r)
 	})
+}
+func RequireAuth(client *supabase.Client) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			cookie, err := r.Cookie("session")
+			if err != nil {
+				http.Redirect(w, r, "/adminlogin", http.StatusSeeOther)
+				return
+			}
+			_, err = client.Auth.WithToken(cookie.Value).GetUser()
+			if err != nil {
+				http.Redirect(w, r, "adminlogin", http.StatusSeeOther)
+				return 
+			}
+			next.ServeHTTP(w, r)
+
+		})
+	}
 }

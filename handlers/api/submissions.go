@@ -13,7 +13,7 @@ const (
 )
 
 
-func (h *ApiHandlers) CreatePrayerRequest(w http.ResponseWriter, r *http.Request) {
+func (h *ApiHandlers) handleSubmission(w http.ResponseWriter, r *http.Request, save func(*models.Submission) error) {
 	code := r.Header.Get(CHURCH_CODE)
 
 	if r.Method != http.MethodPost {
@@ -28,12 +28,12 @@ func (h *ApiHandlers) CreatePrayerRequest(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	//check the code supplied is valid
+	// check the code supplied is valid
 
 	err := r.ParseForm()
 	if err != nil {
 		h.log.LogBadRequest(r, code, "Failed to parse form", err)
-		http.Error(w, "Bad form supplied", http.StatusBadRequest)
+		http.Error(w, BAD_FORM, http.StatusBadRequest)
 		return
 	}
 
@@ -44,65 +44,24 @@ func (h *ApiHandlers) CreatePrayerRequest(w http.ResponseWriter, r *http.Request
 		ChurchCode:  code,
 	}
 
-	err = h.sh.CreatePrayerRequest(req)
-	if err != nil {
-		h.log.Error("Failed to create prayer request - Request: %s %s from %s, Church-Code: %s, Title: %s, Error: %v",
+	if err = save(req); err != nil {
+		h.log.Error("Failed to save submission - Request: %s %s from %s, Church-Code: %s, Title: %s, Error: %v",
 			r.Method, r.URL.Path, r.RemoteAddr, code, req.Title, err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
-	h.log.Success("Prayer request created - Church-Code: %s, Title: %s, Body: %s, ContactInfo: %s",
+	h.log.Success("Submission created - Church-Code: %s, Title: %s, Body: %s, ContactInfo: %s",
 		code, req.Title, req.Body, req.ContactInfo)
 
 	w.Header().Add("HX-Redirect", "/")
-	w.Write([]byte("Prayer Reqeust successfully created"))
-
+	w.Write([]byte("Submission successfully created"))
 }
 
+func (h *ApiHandlers) CreatePrayerRequest(w http.ResponseWriter, r *http.Request) {
+	h.handleSubmission(w, r, h.submissionHandler.CreatePrayerRequest)
+}
 
 func (h *ApiHandlers) CreatePraiseReport(w http.ResponseWriter, r *http.Request) {
-	code := r.Header.Get(CHURCH_CODE)
-
-	if r.Method != http.MethodPost {
-		h.log.LogBadRequest(r, code, "Method not allowed", nil)
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	if code == "" {
-		h.log.LogBadRequest(r, "", "No church code supplied", nil)
-		http.Error(w, NO_CODE, http.StatusBadRequest)
-		return
-	}
-
-
-	err := r.ParseForm()
-	if err != nil {
-		h.log.LogBadRequest(r, code, "Failed to parse form", err)
-		http.Error(w, "Bad form supplied", http.StatusBadRequest)
-		return
-	}
-
-	req := &models.Submission{
-		Title:       r.FormValue("title"),
-		Body:        r.FormValue("body"),
-		ContactInfo: r.FormValue("contactInfo"),
-		ChurchCode:  code,
-	}
-
-	err = h.sh.CreatePraiseReport(req)
-	if err != nil {
-		h.log.Error("Failed to create praise report - report: %s %s from %s, Church-Code: %s, Title: %s, Error: %v",
-			r.Method, r.URL.Path, r.RemoteAddr, code, req.Title, err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	h.log.Success("Praise report created - Church-Code: %s, Title: %s, Body: %s, ContactInfo: %s",
-		code, req.Title, req.Body, req.ContactInfo)
-
-	w.Header().Add("HX-Redirect", "/")
-	w.Write([]byte("Prayer Reqeust successfully created"))
-
+	h.handleSubmission(w, r, h.submissionHandler.CreatePraiseReport)
 }

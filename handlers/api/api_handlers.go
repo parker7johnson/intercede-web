@@ -1,21 +1,30 @@
 package api
 
 import (
-	"github.com/jmoiron/sqlx"
-	"github.com/parkerjohnson/intercede/services"
+	"github.com/parkerjohnson/intercede/services/models"
 	"github.com/parkerjohnson/intercede/utils"
+	"github.com/supabase-community/gotrue-go/types"
 )
 
-type ApiHandlers struct {
-	db *sqlx.DB
-	sh *services.SubmissionHandler 
-	log *utils.Logger
+type submissionService interface {
+	CreatePrayerRequest(*models.Submission) error
+	CreatePraiseReport(*models.Submission) error
 }
 
-func NewApi(db *sqlx.DB) *ApiHandlers {
+type authService interface {
+	Login(string, string) (types.Session, error)
+}
+
+type ApiHandlers struct {
+	submissionHandler submissionService
+	authHandler       authService
+	log               *utils.Logger
+}
+
+func NewApi(sh submissionService, ah authService) *ApiHandlers {
 	return &ApiHandlers{
-			db: db,
-			sh: services.New(db),
-			log: utils.NewLogger("IntercedeAPILogger"),
+		submissionHandler: sh,
+		log:               utils.NewLogger("IntercedeAPILogger"),
+		authHandler:       ah,
 	}
 }

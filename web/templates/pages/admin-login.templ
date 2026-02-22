@@ -10,12 +10,12 @@ templ AdminLoginContent() {
       <h1 class="prayer-header">Church Admin Login</h1>
       <p class="prayer-subheader">Login in to manage your churchs requests</p>
     </div>
-    <form id="prayerRequestForm" class="prayer-form" hx-post="/login">
+    <form id="prayerRequestForm" class="prayer-form" hx-post="/adminapilogin">
       <div>
         <label for="title" class="prayer-label">
-          Username <span class="required">*</span>
+          Email<span class="required">*</span>
         </label>
-        <input type="text" id="title" name="username" required placeholder="Admin username" class="prayer-input" />
+        <input type="text" id="title" name="Email" required placeholder="Admin email" class="prayer-input" />
       </div>
       <div>
         <label for="request" class="prayer-label">

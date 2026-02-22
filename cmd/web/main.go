@@ -13,7 +13,9 @@ import (
 	"github.com/parkerjohnson/intercede/handlers/api"
 	"github.com/parkerjohnson/intercede/handlers/webhandlers"
 	"github.com/parkerjohnson/intercede/internal/middleware"
+	"github.com/parkerjohnson/intercede/services"
 	"github.com/parkerjohnson/intercede/web"
+	"github.com/supabase-community/supabase-go"
 )
 
 func main() {
@@ -30,11 +32,20 @@ func main() {
 	db.SetMaxIdleConns(20)
 	db.SetConnMaxLifetime(5 * time.Minute)
 
-	wh := webhandlers.NewWeb()
-	ah := api.NewApi(db)
+	client, err := supabase.NewClient(os.Getenv("SUPABASE_URL"), os.Getenv("SUPABASE_KEY"), &supabase.ClientOptions{})
+	if err != nil {
+		log.Fatal("Error connecting to Supabase auth: ", err)
+	}
+  
+	submissionService := services.New(db)
+	authService := services.NewAuthService(client)
 
-	// Create router
+	wh := webhandlers.NewWeb()
+	ah := api.NewApi(submissionService, authService)
+
 	mux := http.NewServeMux()
+
+	//authMiddleWare := middleware.RequireAuth(client)
 
 	mux.HandleFunc("/", wh.Home)
 	mux.HandleFunc("/prayerrequest", wh.PrayerRequest)
@@ -43,6 +54,7 @@ func main() {
 
 	mux.HandleFunc("/createPrayer", ah.CreatePrayerRequest)
 	mux.HandleFunc("/createPraise", ah.CreatePraiseReport)
+	mux.HandleFunc("/adminapilogin", ah.Login)
 
 	staticFS, err := fs.Sub(web.StaticFiles, "static")
 	if err != nil {
