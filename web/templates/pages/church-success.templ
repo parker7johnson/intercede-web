@@ -1,0 +1,72 @@
+package pages
+
+import "github.com/parkerjohnson/intercede/web/templates/layouts"
+
+// ChurchCodeBlock renders the final church code card. Used by ChurchSuccess and ChurchCodeStatus.
+templ ChurchCodeBlock(churchCode string) {
+	<div id="church-code-block" class="bg-white rounded-2xl shadow-lg px-10 py-14 text-center mb-16">
+		<p class="text-xl font-semibold mb-6">
+			your church code
+		</p>
+
+		<p class="text-5xl font-bold tracking-[0.3em] text-indigo-600 mb-8">
+			{ churchCode }
+		</p>
+
+		<p class="text-gray-600 text-2xl font-mono mx-auto">
+			share this code with your congregation so they can submit
+			prayer requests and praise reports.
+		</p>
+	</div>
+}
+
+// ChurchCodePending renders a polling state card while the webhook fires.
+templ ChurchCodePending(sessionID string) {
+	<div
+		id="church-code-block"
+		class="bg-white rounded-2xl shadow-lg px-10 py-14 text-center mb-16"
+		hx-get={ "/church/code-status?session_id=" + sessionID }
+		hx-trigger="load delay:2s"
+		hx-swap="outerHTML"
+	>
+		<p class="text-xl font-semibold mb-6">
+			your church code
+		</p>
+
+		<p class="text-gray-500 text-2xl font-mono mx-auto animate-pulse">
+			Finalizing your church setup...
+		</p>
+	</div>
+}
+
+templ ChurchSuccess(churchCode, churchName, sessionID string) {
+	@layouts.Base("Church Created - Intercede") {
+		<div class="w-full px-4 mb-3 sm:px-6" id="createSuccessful">
+
+			<div class="max-w-xl mx-auto prayer-form">
+
+				<div class="text-center mb-16">
+					<h1 class="prayer-header text-4xl mb-4">
+						Welcome to Intercede!
+					</h1>
+					<p class="prayer-subheader text-lg">
+						{ churchName } has been successfully registered.
+					</p>
+				</div>
+
+				if churchCode == "" {
+					@ChurchCodePending(sessionID)
+				} else {
+					@ChurchCodeBlock(churchCode)
+				}
+
+				<div class="text-center">
+					<a href="/admin/dashboard" class="prayer-btn-submit inline-block px-8 py-3 text-lg">
+					  Go to Dashboard
+					</a>
+				</div>
+
+			</div>
+		</div>
+	}
+}

@@ -11,16 +11,19 @@ import (
 )
 
 func TestRequireAuth(t *testing.T) {
+	const testUserID = "user-id-abc123"
+
 	sentinel := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
 
 	cases := []struct {
-		name           string
-		cookie         *http.Cookie
-		verifyErr      error
-		wantStatus     int
-		wantLocation   string
+		name         string
+		cookie       *http.Cookie
+		userID       string
+		verifyErr    error
+		wantStatus   int
+		wantLocation string
 	}{
 		{
 			name:         "no session cookie redirects to adminlogin",
@@ -38,6 +41,7 @@ func TestRequireAuth(t *testing.T) {
 		{
 			name:       "valid token passes through to next handler",
 			cookie:     &http.Cookie{Name: sessionCookieName, Value: testToken},
+			userID:     testUserID,
 			verifyErr:  nil,
 			wantStatus: http.StatusOK,
 		},
@@ -46,12 +50,18 @@ func TestRequireAuth(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			verifier := &mocks.MockAuthVerifier{
-				VerifyTokenFn: func(token string) error {
-					return tc.verifyErr
+				VerifyTokenFn: func(token string) (string, error) {
+					return tc.userID, tc.verifyErr
 				},
 			}
 
-			handler := middleware.RequireAuth(verifier)(sentinel)
+			var capturedUserID string
+			sentinelCapture := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				capturedUserID = middleware.GetUserID(r.Context())
+				w.WriteHeader(http.StatusOK)
+			})
+
+			handler := middleware.RequireAuth(verifier)(sentinelCapture)
 
 			req := httptest.NewRequest(http.MethodGet, adminPath, nil)
 			if tc.cookie != nil {
@@ -69,6 +79,14 @@ func TestRequireAuth(t *testing.T) {
 					t.Errorf("Location: got %q, want %q", loc, tc.wantLocation)
 				}
 			}
+			if tc.wantStatus == http.StatusOK && tc.userID != "" {
+				if capturedUserID != tc.userID {
+					t.Errorf("context user ID: got %q, want %q", capturedUserID, tc.userID)
+				}
+			}
 		})
 	}
+
+	// Suppress unused variable warning for the unused sentinel
+	_ = sentinel
 }

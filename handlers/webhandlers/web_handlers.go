@@ -1,13 +1,24 @@
-package webhandlers 
+package webhandlers
 
-// Handlers holds dependencies for HTTP handlers
-type WebHandlers struct {
-	// Add dependencies here (e.g., database, logger, services)
+import (
+	"context"
+
+	"github.com/parkerjohnson/intercede/services/models"
+)
+
+type churchLookup interface {
+	GetChurchBySessionID(ctx context.Context, sessionID string) (*models.Church, error)
+	GetChurchByUserID(ctx context.Context, userID string) (*models.Church, error)
 }
 
-// New creates a new Handlers instance with dependencies
-func NewWeb() *WebHandlers {
+// WebHandlers holds dependencies for HTTP handlers
+type WebHandlers struct {
+	churchService churchLookup
+}
+
+// NewWeb creates a new WebHandlers instance with dependencies
+func NewWeb(cs churchLookup) *WebHandlers {
 	return &WebHandlers{
-		// Initialize dependencies here
+		churchService: cs,
 	}
 }

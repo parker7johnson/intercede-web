@@ -28,7 +28,6 @@ func (as *AuthService) Login(email, password string) (types.Session, error) {
 	if err != nil {
 		as.log.Error("Supabase auth error: %v - email: %s", err, email)
 	}
-  as.Client.EnableTokenAutoRefresh(session)
 	return session, err
 
 }

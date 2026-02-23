@@ -15,6 +15,7 @@ import (
 	"github.com/parkerjohnson/intercede/internal/middleware"
 	"github.com/parkerjohnson/intercede/services"
 	"github.com/parkerjohnson/intercede/web"
+	stripe "github.com/stripe/stripe-go/v82"
 	"github.com/supabase-community/supabase-go"
 )
 
@@ -36,25 +37,42 @@ func main() {
 	if err != nil {
 		log.Fatal("Error connecting to Supabase auth: ", err)
 	}
-  
+
+	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
+	stripeWebhookSecret := os.Getenv("STRIPE_WEBHOOK_SECRET")
+	stripePriceID := os.Getenv("STRIPE_PRICE_ID")
+	baseURL := os.Getenv("BASE_URL")
+	if baseURL == "" {
+		baseURL = "http://localhost:" + port
+	}
+
 	submissionService := services.New(db)
 	authService := services.NewAuthService(client)
+	churchService := services.NewChurchService(db)
 
-	wh := webhandlers.NewWeb()
+	wh := webhandlers.NewWeb(churchService)
 	ah := api.NewApi(submissionService, authService)
+	ch := api.NewChurchAPI(churchService, nil, stripeWebhookSecret, stripePriceID, baseURL, client.Auth)
 
 	mux := http.NewServeMux()
 
-	//authMiddleWare := middleware.RequireAuth(&middleware.SupabaseTokenVerifier{Client: client})
+	authMiddleWare := middleware.RequireAuth(&middleware.SupabaseTokenVerifier{Client: client})
 
 	mux.HandleFunc("/", wh.Home)
 	mux.HandleFunc("/prayerrequest", wh.PrayerRequest)
 	mux.HandleFunc("/praisereport", wh.PraiseReport)
 	mux.HandleFunc("/adminlogin", wh.AdminLogin)
+	mux.HandleFunc("/church-create", wh.ChurchCreate)
+	mux.HandleFunc("/church/success", wh.ChurchSuccess)
+	mux.HandleFunc("/church/code-status", wh.ChurchCodeStatus)
+	mux.HandleFunc("/church/cancel", wh.ChurchCancel)
+	mux.Handle("/admin/dashboard", authMiddleWare(http.HandlerFunc(wh.AdminDashboard)))
 
 	mux.HandleFunc("/createPrayer", ah.CreatePrayerRequest)
 	mux.HandleFunc("/createPraise", ah.CreatePraiseReport)
 	mux.HandleFunc("/adminapilogin", ah.Login)
+	mux.HandleFunc("/api/church/checkout", ch.StartCheckout)
+	mux.HandleFunc("/webhooks/stripe", ch.HandleStripeWebhook)
 
 	staticFS, err := fs.Sub(web.StaticFiles, "static")
 	if err != nil {

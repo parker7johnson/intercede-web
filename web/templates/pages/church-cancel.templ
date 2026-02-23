@@ -1,0 +1,17 @@
+package pages
+
+import "github.com/parkerjohnson/intercede/web/templates/layouts"
+
+templ ChurchCancel() {
+	@layouts.Base("Payment Cancelled - Intercede") {
+		<div class="w-full px-4 mb-3 sm:px-6">
+			<div class="max-w-3xl mx-auto text-center">
+				<div class="mb-6">
+					<h1 class="prayer-header">Payment Cancelled</h1>
+					<p class="prayer-subheader">Your payment was cancelled and you have not been charged.</p>
+				</div>
+				<a href="/church-create" class="prayer-btn-submit inline-block">Try Again</a>
+			</div>
+		</div>
+	}
+}

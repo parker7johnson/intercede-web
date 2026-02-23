@@ -27,9 +27,10 @@ func (ah *ApiHandlers) Login(w http.ResponseWriter, r *http.Request) {
 		Name:     "session",
 		Value:    session.AccessToken,
 		HttpOnly: true,
-		Secure:   true,
+		Secure:   false,
 		SameSite: http.SameSiteStrictMode,
 		Path:     "/",
 	})
+	w.Header().Set("HX-Redirect", "/admin/dashboard")
 	w.WriteHeader(http.StatusOK)
 }

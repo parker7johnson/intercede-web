@@ -1,0 +1,48 @@
+package pages
+
+import "github.com/parkerjohnson/intercede/web/templates/layouts"
+
+templ ChurchCreateContent() {
+	<div class="w-full px-4 mb-3 sm:px-6" id="prayerRequestContainer">
+		<div class="max-w-3xl mx-auto">
+			<div class="text-center mb-4">
+				<h1 class="prayer-header">Church Creation</h1>
+				<p class="prayer-subheader">Create your church profile for members to send submissions to</p>
+			</div>
+			<form id="churchCreateForm" class="prayer-form" method="POST" action="/api/church/checkout" hx-boost="false">
+				<div>
+					<label for="churchname" class="prayer-label">
+						Church Name<span class="required">*</span>
+					</label>
+					<input type="text" id="churchname" name="churchname" required placeholder="Church name" class="prayer-input"/>
+				</div>
+				<div>
+					<label for="adminemail" class="prayer-label">
+						Admin Email<span class="required">*</span>
+					</label>
+					<input id="adminemail" name="adminemail" required placeholder="Admin email" class="prayer-input"/>
+				</div>
+				<div>
+					<label for="password" class="prayer-label">
+						Admin Email<span class="required">*</span>
+					</label>
+					<input id="password" name="password" required placeholder="Admin password" class="prayer-input"/>
+				</div>
+				<div class="prayer-buttons">
+					<button type="button" class="prayer-btn-cancel p-2" hx-get="/" hx-target="#mainContent" hx-swap="innerHTML">
+						Back
+					</button>
+					<button type="submit" id="churchSubmitBtn" class="prayer-btn-submit">
+						Continue to Payment
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+}
+
+templ ChurchCreate() {
+	@layouts.Base("Create Church - Intercede") {
+		@ChurchCreateContent()
+	}
+}

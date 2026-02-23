@@ -2,9 +2,9 @@ package mocks
 
 // MockAuthVerifier implements middleware.TokenVerifier for use in tests.
 type MockAuthVerifier struct {
-	VerifyTokenFn func(token string) error
+	VerifyTokenFn func(token string) (string, error)
 }
 
-func (m *MockAuthVerifier) VerifyToken(token string) error {
+func (m *MockAuthVerifier) VerifyToken(token string) (string, error) {
 	return m.VerifyTokenFn(token)
 }
