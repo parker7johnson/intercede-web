@@ -16,7 +16,7 @@ import (
 )
 
 func newWebHandlers(svc *mocks.MockChurchService) *webhandlers.WebHandlers {
-	return webhandlers.NewWeb(svc)
+	return webhandlers.NewWeb(svc, nil)
 }
 
 func TestChurchCreate(t *testing.T) {
