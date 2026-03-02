@@ -1,8 +1,10 @@
 package api
 
 import (
-	"github.com/parkerjohnson/intercede/services/models"
 	"net/http"
+	"slices"
+
+	"github.com/parkerjohnson/intercede/services/models"
 )
 
 const (
@@ -28,9 +30,13 @@ func (h *ApiHandlers) handleSubmission(w http.ResponseWriter, r *http.Request, s
 		return
 	}
 
-	// check the code supplied is valid
-
-	err := r.ParseForm()
+	codes, err := h.submissionHandler.GetChurchCodes()
+	if !slices.Contains(codes, code) {
+		h.log.LogBadRequest(r, code, "Bad church code supplied", nil)
+		http.Error(w, "Method not allowed", http.StatusBadRequest)
+		return
+	}
+	err = r.ParseForm()
 	if err != nil {
 		h.log.LogBadRequest(r, code, "Failed to parse form", err)
 		http.Error(w, BAD_FORM, http.StatusBadRequest)

@@ -21,8 +21,8 @@ func (h *WebHandlers) AdminDashboard(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+  var err error
 	isHTMX := r.Header.Get("HX-Request") == "true"
-	var err error
 	if isHTMX {
 		err = pages.AdminDashboardContent(churchCode).Render(r.Context(), w)
 	} else {

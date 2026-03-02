@@ -9,6 +9,7 @@ import (
 type submissionService interface {
 	CreatePrayerRequest(*models.Submission) error
 	CreatePraiseReport(*models.Submission) error
+	GetChurchCodes() ([]string, error)
 }
 
 type authService interface {

@@ -12,8 +12,6 @@ func (ah *ApiHandlers) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//because these are empty strings if they are missing
-	//we don't need to check for nils before we try and login
 	email := r.FormValue("email")
 	password := r.FormValue("password")
 	

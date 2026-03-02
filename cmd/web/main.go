@@ -50,7 +50,7 @@ func main() {
 	authService := services.NewAuthService(client)
 	churchService := services.NewChurchService(db)
 
-	wh := webhandlers.NewWeb(churchService)
+	wh := webhandlers.NewWeb(churchService, submissionService)
 	ah := api.NewApi(submissionService, authService)
 	ch := api.NewChurchAPI(churchService, nil, stripeWebhookSecret, stripePriceID, baseURL, client.Auth)
 
@@ -73,6 +73,7 @@ func main() {
 	mux.HandleFunc("/adminapilogin", ah.Login)
 	mux.HandleFunc("/api/church/checkout", ch.StartCheckout)
 	mux.HandleFunc("/webhooks/stripe", ch.HandleStripeWebhook)
+	mux.Handle("/admin/dashboard/submissions", authMiddleWare(http.HandlerFunc(wh.DashboardSubmissions)))
 
 	staticFS, err := fs.Sub(web.StaticFiles, "static")
 	if err != nil {

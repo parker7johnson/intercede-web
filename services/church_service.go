@@ -93,6 +93,9 @@ func (cs *ChurchService) GetChurchByUserID(ctx context.Context, userID string) (
 	return &church, nil
 }
 
+
+
+
 func (cs *ChurchService) generateUniqueChurchCode(ctx context.Context, sessionID string) (string, error) {
 	church, err := cs.GetChurchBySessionID(ctx, sessionID)
 	if err != nil {

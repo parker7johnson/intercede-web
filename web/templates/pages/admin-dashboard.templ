@@ -5,12 +5,10 @@ import "github.com/parkerjohnson/intercede/web/templates/layouts"
 templ AdminDashboardContent(churchCode string) {
 	<div class="w-full px-4 mb-3 sm:px-6">
 		<div class="max-w-5xl mx-auto">
-
 			<div class="mb-8">
 				<h1 class="prayer-header">Church Dashboard</h1>
 				<p class="prayer-subheader">Manage your congregation's submissions</p>
 			</div>
-
 			<!-- Church Code Banner -->
 			<div class="bg-white/60 backdrop-blur-sm rounded-2xl shadow-md px-8 py-6 mb-8 text-center">
 				<p class="text-sm font-semibold uppercase tracking-widest mb-2" style="color: #808073;">Your Church Code</p>
@@ -21,7 +19,6 @@ templ AdminDashboardContent(churchCode string) {
 				}
 				<p class="prayer-subheader mt-2">Share this with your congregation</p>
 			</div>
-
 			<!-- Stats -->
 			<div class="grid grid-cols-2 gap-4 mb-8">
 				<div class="bg-white/60 backdrop-blur-sm rounded-2xl shadow-md px-8 py-6 flex flex-col items-center text-center">
@@ -33,19 +30,28 @@ templ AdminDashboardContent(churchCode string) {
 					<span class="text-sm font-semibold uppercase tracking-widest" style="color: #808073;">Praise Reports</span>
 				</div>
 			</div>
-
 			<!-- Recent Prayer Requests -->
-			<div class="bg-white/60 backdrop-blur-sm rounded-2xl shadow-md px-8 py-6 mb-6">
+			<div
+				id="prayer-requests"
+				hx-get="/admin/dashboard/submissions?type=prayer"
+				hx-trigger="load"
+				hx-swap="innerHTML"
+				class="bg-white/60 backdrop-blur-sm rounded-2xl shadow-md px-8 py-6 mb-6"
+			>
 				<h2 class="text-xl font-semibold mb-4" style="color: #4D4D40;">Recent Prayer Requests</h2>
-				<p class="prayer-subheader text-center py-8">No prayer requests yet.</p>
+				<p class="prayer-subheader text-center py-8">Loading...</p>
 			</div>
-
 			<!-- Recent Praise Reports -->
-			<div class="bg-white/60 backdrop-blur-sm rounded-2xl shadow-md px-8 py-6">
+			<div
+				id="praise-reports"
+				hx-get="/admin/dashboard/submissions?type=praise"
+				hx-trigger="load"
+				hx-swap="innerHTML"
+				class="bg-white/60 backdrop-blur-sm rounded-2xl shadow-md px-8 py-6"
+			>
 				<h2 class="text-xl font-semibold mb-4" style="color: #4D4D40;">Recent Praise Reports</h2>
-				<p class="prayer-subheader text-center py-8">No praise reports yet.</p>
+				<p class="prayer-subheader text-center py-8">Loading...</p>
 			</div>
-
 		</div>
 	</div>
 }
